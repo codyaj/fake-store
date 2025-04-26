@@ -2,10 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, ActivityIndicator, ScrollView, TouchableOpacity, StatusBar } from 'react-native';
 
 export default function CategoryScreen({ navigation }) {
-    const handleCategorySelect = (category) => {
-        navigation.navigate('prodList', { category });
-    };
-
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
 
