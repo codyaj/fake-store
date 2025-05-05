@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, ActivityIndicator, ScrollView, TouchableOpacity, StatusBar } from 'react-native';
+import { Ionicons } from "@expo/vector-icons";
 
 export default function CategoryScreen({ navigation }) {
     const [categories, setCategories] = useState([]);
@@ -47,6 +48,44 @@ export default function CategoryScreen({ navigation }) {
                     </TouchableOpacity>
                 ))}
             </ScrollView>
+
+            <View style={styles.navFooterContainer}>
+                <TouchableOpacity 
+                    style={styles.navFooterBtn}
+                    onPress={() => navigation.navigate('category')}
+                    activeOpacity={0.7}
+                >
+                    <Ionicons name="home" size={24} color="#007AFF" />
+                    <Text style={styles.navFooterTextSelected}>Products</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity 
+                    style={styles.navFooterBtn}
+                    onPress={() => alert('changeme')}
+                    activeOpacity={0.7}
+                >
+                    <Ionicons name="cart" size={24} color="white" />
+                    <Text style={styles.navFooterText}>My Cart</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity 
+                    style={styles.navFooterBtn}
+                    onPress={() => alert('changeme')}
+                    activeOpacity={0.7}
+                >
+                    <Ionicons name="gift" size={24} color="white" />
+                    <Text style={styles.navFooterText}>My Orders</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity 
+                    style={styles.navFooterBtn}
+                    onPress={() => alert('changeme')}
+                    activeOpacity={0.7}
+                >
+                    <Ionicons name="person" size={24} color="white" />
+                    <Text style={styles.navFooterText}>User Profile</Text>
+                </TouchableOpacity>
+            </View>
         </View>
     );
 }
@@ -92,5 +131,26 @@ const styles = StyleSheet.create({
     categoryBtnText: {
         fontSize: 20,
         color: '#fff',
-    }
+    },
+    navFooterContainer: {
+        backgroundColor: '#242424',
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        paddingTop: 15,
+        paddingBottom: 20,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: -5 },
+        shadowOpacity: 0.3,
+        shadowRadius: 6,
+        elevation: 10,
+    },
+    navFooterBtn: {
+        alignItems: 'center',
+    },
+    navFooterText: {
+        color: '#fff',
+    }, 
+    navFooterTextSelected: {
+        color: '#007AFF',
+    },
 });

@@ -60,14 +60,41 @@ export default function ProductListScreen({ route, navigation }) {
                 ))}
             </ScrollView>
 
-            <View style={styles.footer}>
-                <TouchableOpacity
-                    style={styles.footerBtn}
-                    onPress={() => navigation.navigate("category")}
+            <View style={styles.navFooterContainer}>
+                <TouchableOpacity 
+                    style={styles.navFooterBtn}
+                    onPress={() => navigation.navigate('category')}
                     activeOpacity={0.7}
                 >
-                    <Ionicons name="close-circle-outline" size={24} color="white" />
-                    <Text style={styles.footerText}>Back</Text>
+                    <Ionicons name="home" size={24} color="#007AFF" />
+                    <Text style={styles.navFooterTextSelected}>Products</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity 
+                    style={styles.navFooterBtn}
+                    onPress={() => alert('changeme')}
+                    activeOpacity={0.7}
+                >
+                    <Ionicons name="cart" size={24} color="white" />
+                    <Text style={styles.navFooterText}>My Cart</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity 
+                    style={styles.navFooterBtn}
+                    onPress={() => alert('changeme')}
+                    activeOpacity={0.7}
+                >
+                    <Ionicons name="gift" size={24} color="white" />
+                    <Text style={styles.navFooterText}>My Orders</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity 
+                    style={styles.navFooterBtn}
+                    onPress={() => alert('changeme')}
+                    activeOpacity={0.7}
+                >
+                    <Ionicons name="person" size={24} color="white" />
+                    <Text style={styles.navFooterText}>User Profile</Text>
                 </TouchableOpacity>
             </View>
         </View>
@@ -134,30 +161,25 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#fff',
     },
-    footer: {
+    navFooterContainer: {
         backgroundColor: '#242424',
-        padding: 20,
-        paddingBottom: 30,
-        alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        paddingTop: 15,
+        paddingBottom: 20,
         shadowColor: "#000",
         shadowOffset: { width: 0, height: -5 },
         shadowOpacity: 0.3,
         shadowRadius: 6,
         elevation: 10,
     },
-    footerBtn: {
-        flexDirection: 'row',
+    navFooterBtn: {
         alignItems: 'center',
-        backgroundColor: '#363636',
-        paddingHorizontal: 20,
-        paddingVertical: 12,
-        minWidth: 200,
-        justifyContent: 'center',
-        borderRadius: 8,
     },
-    footerText: {
-        paddingLeft: 10,
-        fontSize: 20,
+    navFooterText: {
         color: '#fff',
+    }, 
+    navFooterTextSelected: {
+        color: '#007AFF',
     },
 });
