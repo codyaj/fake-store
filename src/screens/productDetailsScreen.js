@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, ActivityIndicator, ScrollView, TouchableOpacity, StatusBar, Image } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
+import { useDispatch, useSelector } from 'react-redux';
+import { addToCart } from '../slices/cartSlice';
 
 export default function ProductDetailsScreen({ route, navigation }) {
     const { product } = route.params;
@@ -24,6 +26,13 @@ export default function ProductDetailsScreen({ route, navigation }) {
       
         return <>{stars}</>;
     }
+
+    const dispatch = useDispatch();
+
+    const handleAddToCart = (product) => {
+        dispatch(addToCart(product));
+        Alert.alert('Success', 'Item added to cart!');
+    };
 
     return (
         <View style={styles.container}>
@@ -65,6 +74,7 @@ export default function ProductDetailsScreen({ route, navigation }) {
                         <Text style={styles.btnText}>Back</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
+                        onPress={() => handleAddToCart(product)}
                         style={styles.btn}
                     >
                         <Ionicons name="cart-outline" size={24} color="white" />
