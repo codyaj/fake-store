@@ -78,7 +78,7 @@ export default function CartScreen({ navigation }) {
             <View style={styles.navFooterContainer}>
                 <TouchableOpacity 
                     style={styles.navFooterBtn}
-                    onPress={() => navigation.navigate('category')}
+                    onPress={() => navigation.replace('category')}
                     activeOpacity={0.7}
                 >
                     <Ionicons name="home" size={24} color="white" />
@@ -87,7 +87,7 @@ export default function CartScreen({ navigation }) {
 
                 <TouchableOpacity 
                     style={styles.navFooterBtn}
-                    onPress={() => navigation.navigate('shopCart')}
+                    onPress={() => navigation.replace('shopCart')}
                     activeOpacity={0.7}
                 >
                     <Ionicons name="cart" size={24} color="#007AFF" />

@@ -41,7 +41,7 @@ export default function CategoryScreen({ navigation }) {
                     <TouchableOpacity 
                         key={index}
                         style={styles.categoryBtn}
-                        onPress={() => navigation.navigate('prodList', { category })}
+                        onPress={() => navigation.replace('prodList', { category })}
                         activeOpacity={0.7}
                     >
                         <Text style={styles.categoryBtnText}>{category}</Text>
@@ -52,7 +52,7 @@ export default function CategoryScreen({ navigation }) {
             <View style={styles.navFooterContainer}>
                 <TouchableOpacity 
                     style={styles.navFooterBtn}
-                    onPress={() => navigation.navigate('category')}
+                    onPress={() => navigation.replace('category')}
                     activeOpacity={0.7}
                 >
                     <Ionicons name="home" size={24} color="#007AFF" />
@@ -61,7 +61,7 @@ export default function CategoryScreen({ navigation }) {
 
                 <TouchableOpacity 
                     style={styles.navFooterBtn}
-                    onPress={() => navigation.navigate('shopCart')}
+                    onPress={() => navigation.replace('shopCart')}
                     activeOpacity={0.7}
                 >
                     <Ionicons name="cart" size={24} color="white" />

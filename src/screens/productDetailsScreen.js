@@ -67,7 +67,7 @@ export default function ProductDetailsScreen({ route, navigation }) {
 
                 <View style={styles.btnContainer}>
                     <TouchableOpacity
-                        onPress={() => navigation.navigate('prodList', { category: product.category })}
+                        onPress={() => navigation.replace('prodList', { category: product.category })}
                         style={styles.btn}
                     >
                         <Ionicons name="close-circle-outline" size={24} color="white" />
@@ -91,7 +91,7 @@ export default function ProductDetailsScreen({ route, navigation }) {
             <View style={styles.navFooterContainer}>
                 <TouchableOpacity 
                     style={styles.navFooterBtn}
-                    onPress={() => navigation.navigate('category')}
+                    onPress={() => navigation.replace('category')}
                     activeOpacity={0.7}
                 >
                     <Ionicons name="home" size={24} color="#007AFF" />
@@ -100,7 +100,7 @@ export default function ProductDetailsScreen({ route, navigation }) {
 
                 <TouchableOpacity 
                     style={styles.navFooterBtn}
-                    onPress={() => navigation.navigate('shopCart')}
+                    onPress={() => navigation.replace('shopCart')}
                     activeOpacity={0.7}
                 >
                     <Ionicons name="cart" size={24} color="white" />
