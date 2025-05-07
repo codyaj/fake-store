@@ -31,7 +31,7 @@ export default function ProductDetailsScreen({ route, navigation }) {
 
     const handleAddToCart = (product) => {
         dispatch(addToCart(product));
-        Alert.alert('Success', 'Item added to cart!');
+        alert('Success, Item added to cart!');
     };
 
     return (
@@ -100,7 +100,7 @@ export default function ProductDetailsScreen({ route, navigation }) {
 
                 <TouchableOpacity 
                     style={styles.navFooterBtn}
-                    onPress={() => alert('changeme')}
+                    onPress={() => navigation.navigate('shopCart')}
                     activeOpacity={0.7}
                 >
                     <Ionicons name="cart" size={24} color="white" />

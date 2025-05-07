@@ -61,7 +61,7 @@ export default function CategoryScreen({ navigation }) {
 
                 <TouchableOpacity 
                     style={styles.navFooterBtn}
-                    onPress={() => alert('changeme')}
+                    onPress={() => navigation.navigate('shopCart')}
                     activeOpacity={0.7}
                 >
                     <Ionicons name="cart" size={24} color="white" />

@@ -7,6 +7,7 @@ import { store } from './src/store';
 import categoryScreen from './src/screens/categoryScreen';
 import productDetailsScreen from './src/screens/productDetailsScreen';
 import productListScreen from './src/screens/productListScreen';
+import cartScreen from './src/screens/cartScreen';
 
 const Stack = createStackNavigator();
 
@@ -29,6 +30,10 @@ export default function App() {
           <Stack.Screen
             name='prodList'
             component={productListScreen}
+          />
+          <Stack.Screen
+            name='shopCart'
+            component={cartScreen}
           />
         </Stack.Navigator>
       </NavigationContainer>
