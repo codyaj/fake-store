@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, ActivityIndicator, ScrollView, TouchableOpacity, StatusBar } from 'react-native';
 import NavFooter from '../components/navFooter';
 
-export default function CategoryScreen({ navigation }) {
+export default function CategoryScreen({ route, navigation }) {
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -49,7 +49,7 @@ export default function CategoryScreen({ navigation }) {
                 ))}
             </ScrollView>
 
-            <NavFooter navigation={navigation} />
+            <NavFooter navigation={navigation} route={route} />
         </View>
     );
 }

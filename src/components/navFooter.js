@@ -3,7 +3,7 @@ import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useSelector } from 'react-redux';
 
-const NavFooter = ({ navigation }) => {
+const NavFooter = ({ navigation, route }) => {
     const cartItems = useSelector(state => state.cart.items);
 
     const groupedItems = cartItems.reduce((acc, item) => {
@@ -16,8 +16,9 @@ const NavFooter = ({ navigation }) => {
     }, new Map());
 
     const itemsArray = Array.from(groupedItems.values());
-
     const totalItemCount = itemsArray.reduce((sum, item) => sum + item.count, 0);
+
+    const currentRoute = route?.name || '';
 
     return (
         <View style={styles.navFooterContainer}>
@@ -26,8 +27,14 @@ const NavFooter = ({ navigation }) => {
                 onPress={() => navigation.replace('category')}
                 activeOpacity={0.7}
             >
-                <Ionicons name="home" size={24} color="white" />
-                <Text style={styles.navFooterText}>Products</Text>
+                <Ionicons 
+                    name="home" 
+                    size={24} 
+                    color={currentRoute === 'category' || currentRoute === 'prodDetails' || currentRoute === 'prodList' ? '#007AFF' : 'white'}
+                />
+                <Text style={currentRoute === 'category' || currentRoute === 'prodDetails' || currentRoute === 'prodList' ? styles.navFooterTextSelected : styles.navFooterText}>
+                    Products
+                </Text>
             </TouchableOpacity>
 
             <TouchableOpacity 
@@ -36,14 +43,20 @@ const NavFooter = ({ navigation }) => {
                 activeOpacity={0.7}
             >
                 <View style={{ position: 'relative' }}>
-                    <Ionicons name="cart" size={24} color="#007AFF" />
+                    <Ionicons 
+                        name="cart" 
+                        size={24} 
+                        color={currentRoute === 'shopCart' ? '#007AFF' : 'white'}
+                    />
                     {totalItemCount >= 1 && (
                         <View style={styles.cartBadge}>
                             <Text style={styles.cartBadgeText}>{totalItemCount}</Text>
                         </View>
                     )}
                 </View>
-                <Text style={styles.navFooterTextSelected}>My Cart</Text>
+                <Text style={currentRoute === 'shopCart' ? styles.navFooterTextSelected : styles.navFooterText}>
+                    My Cart
+                </Text>
             </TouchableOpacity>
 
             <TouchableOpacity 

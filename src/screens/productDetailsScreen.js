@@ -89,7 +89,7 @@ export default function ProductDetailsScreen({ route, navigation }) {
                 </View>
             </ScrollView>
 
-            <NavFooter navigation={navigation} />
+            <NavFooter navigation={navigation} route={route} />
         </View>
     );
 }

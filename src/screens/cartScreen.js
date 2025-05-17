@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { removeFromCart, addToCart } from '../slices/cartSlice';
 import NavFooter from '../components/navFooter';
 
-export default function CartScreen({ navigation }) {
+export default function CartScreen({ route, navigation }) {
     const cartItems = useSelector((state) => state.cart.items);
     const dispatch = useDispatch();
 
@@ -76,7 +76,7 @@ export default function CartScreen({ navigation }) {
                 )}
             </ScrollView>
 
-            <NavFooter navigation={navigation} />
+            <NavFooter navigation={navigation} route={route} />
         </View>
     );
 }

@@ -61,7 +61,7 @@ export default function ProductListScreen({ route, navigation }) {
                 ))}
             </ScrollView>
 
-            <NavFooter navigation={navigation} />
+            <NavFooter navigation={navigation} route={route} />
         </View>
     );
 }
