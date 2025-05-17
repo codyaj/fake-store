@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, StatusBar } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from 'react-redux';
-import { addToCart } from '../slices/cartSlice';
 import { login } from '../slices/authSlice';
 import NavFooter from '../components/navFooter';
 
@@ -15,7 +14,9 @@ export default function LoginScreen({ route, navigation }) {
         setPassword('');
     }
 
-    const login = async () => {
+    const dispatch = useDispatch();
+
+    const handleLogin = async () => {
         console.log('login attempted');
         try {
             const response = await fetch('http://192.168.20.7:3000/users/signin', {
@@ -35,10 +36,12 @@ export default function LoginScreen({ route, navigation }) {
                 console.log('Signin successful:', data);
 
                 // Store token
-                dispatchEvent(login({
+                dispatch(login({
                     token: data.token,
                     user: { name: data.name, email: data.email, id: data.id }
                 }));
+
+                navigation.replace('profile');
             } else {
                 console.error('Signin failed:', data.message || data);
             }
@@ -83,7 +86,7 @@ export default function LoginScreen({ route, navigation }) {
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={styles.btn}
-                        onPress={() => login()}
+                        onPress={() => handleLogin()}
                     >
                         <Ionicons name="log-in-outline" size={24} color="white" />
                         <Text style={styles.btnText}>Sign In</Text>

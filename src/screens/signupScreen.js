@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, StatusBar } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from 'react-redux';
-import { addToCart } from '../slices/cartSlice';
 import { login } from '../slices/authSlice';
 import NavFooter from '../components/navFooter';
 
@@ -15,6 +14,8 @@ export default function SignupScreen({ route, navigation }) {
         setEmail('');
         setPassword('');
     }
+
+    const dispatch = useDispatch();
 
     const signup = async () => {
         console.log('Signup Attempting');
@@ -37,10 +38,12 @@ export default function SignupScreen({ route, navigation }) {
                 console.log('Signup successful:', data);
 
                 // Store token
-                dispatchEvent(login({
+                dispatch(login({
                     token: data.token,
                     user: { name: data.name, email: data.email, id: data.id }
                 }));
+
+                navigation.replace('profile');
             } else {
                 console.error('Signup failed:', data.message || data);
             }
