@@ -2,6 +2,7 @@ import React from 'react';
 import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useSelector } from 'react-redux';
+import { useNavigationState } from '@react-navigation/native';
 
 const NavFooter = ({ navigation, route }) => {
     const cartItems = useSelector(state => state.cart.items);
@@ -20,11 +21,24 @@ const NavFooter = ({ navigation, route }) => {
 
     const currentRoute = route?.name || '';
 
+    const user = useSelector(state => state.auth.user);
+
+    const navigateIfLoggedIn = (destination) => {
+        if (user) {
+            navigation.replace(destination);
+        } else {
+            alert('Not logged in!');
+            if (currentRoute !== 'login'){
+                navigation.replace('login');
+            }
+        }
+    }
+
     return (
         <View style={styles.navFooterContainer}>
             <TouchableOpacity 
                 style={styles.navFooterBtn}
-                onPress={() => navigation.replace('category')}
+                onPress={() => navigateIfLoggedIn('category')}
                 activeOpacity={0.7}
             >
                 <Ionicons 
@@ -39,7 +53,7 @@ const NavFooter = ({ navigation, route }) => {
 
             <TouchableOpacity 
                 style={styles.navFooterBtn}
-                onPress={() => navigation.replace('shopCart')}
+                onPress={() => navigateIfLoggedIn('shopCart')}
                 activeOpacity={0.7}
             >
                 <View style={{ position: 'relative' }}>
@@ -70,7 +84,7 @@ const NavFooter = ({ navigation, route }) => {
 
             <TouchableOpacity 
                 style={styles.navFooterBtn}
-                onPress={() => alert('changeme')}
+                onPress={() => navigateIfLoggedIn('profile')}
                 activeOpacity={0.7}
             >
                 <Ionicons name="person" size={24} color="white" />
