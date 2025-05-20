@@ -1,19 +1,59 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, StatusBar } from 'react-native';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, StatusBar, Modal, Alert } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from 'react-redux';
-import { logout } from '../slices/authSlice';
+import { logout, login } from '../slices/authSlice';
 import NavFooter from '../components/navFooter';
 
 export default function ProfileScreen({ route, navigation }) {
     const user = useSelector((state) => state.auth.user);
-
+    const token = useSelector((state) => state.auth.token);
     const dispatch = useDispatch();
+
+    const [modalVisible, setModalVisible] = useState(false);
+    const [newName, setNewName] = useState('');
+    const [newPassword, setNewPassword] = useState('');
 
     const signout = () => {
         dispatch(logout());
         navigation.replace('login');
-    }
+    };
+
+    const updateTest = async () => {
+        try {
+            const response = await fetch('http://192.168.20.7:3000/users/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    name: newName,
+                    password: newPassword,
+                }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.status === "OK") {
+                console.log('Change successful:', data);
+                Alert.alert("Success", "User info updates successfully.");
+                setModalVisible(false);
+
+                dispatch(login({
+                    token: token,
+                    user: { name: newName, email: user.email, id: user.id }
+                }));
+
+            } else {
+                console.error('Change failed:', data.message || data);
+                Alert.alert("Error", data.message || "Update failed.");
+            }
+        } catch (error) {
+            console.log('Network error:', error);
+            Alert.alert("Error", "Network error occured.");
+        }
+    };
 
     return (
         <View style={styles.container}>
@@ -29,7 +69,7 @@ export default function ProfileScreen({ route, navigation }) {
                 <View style={styles.btnContainer}>
                     <TouchableOpacity
                         style={styles.btn}
-                        onPress={() => clearAll()}
+                        onPress={() => setModalVisible(true)}
                     >
                         <Ionicons name="color-wand-outline" size={24} color="white" />
                         <Text style={styles.btnText}>Update</Text>
@@ -45,6 +85,45 @@ export default function ProfileScreen({ route, navigation }) {
             </View>
 
             <NavFooter navigation={navigation} route={route} />
+
+            {/* Modal for user info updating */}
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => setModalVisible(false)}
+            >
+                <View style={styles.modalOverlay}>
+                    <View style={styles.modalContainer}>
+                        <Text style={styles.modalTitle}>Update Info</Text>
+                        <TextInput
+                            placeholder="New Name"
+                            placeholderTextColor="#999"
+                            style={styles.input}
+                            onChangeText={setNewName}
+                            value={newName}
+                        />
+                        <TextInput
+                            placeholder="New Password"
+                            placeholderTextColor="#999"
+                            secureTextEntry
+                            style={styles.input}
+                            onChangeText={setNewPassword}
+                            value={newPassword}
+                        />
+                        <View style={styles.btnContainer}>
+                            <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.modalBtn}>
+                                <Ionicons name="arrow-back-circle-outline" size={24} color="white" />
+                                <Text style={styles.btnText}>Cancel</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={updateTest} style={styles.modalBtn}>
+                                <Ionicons name="save-outline" size={24} color="white" />
+                                <Text style={styles.btnText}>Save</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
         </View>
     );
 }
@@ -103,4 +182,40 @@ const styles = StyleSheet.create({
         marginLeft: 5,
         color: '#fff',
     },
+    modalOverlay: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0,0,0,0.5)',
+    },
+    modalContainer: {
+        width: '80%',
+        backgroundColor: '#333',
+        borderRadius: 10,
+        padding: 20,
+    },
+    modalTitle: {
+        fontSize: 20,
+        color: '#fff',
+        marginBottom: 10,
+        textAlign: 'center',
+    },
+    input: {
+        borderWidth: 1,
+        borderColor: '#666',
+        borderRadius: 8,
+        padding: 10,
+        marginVertical: 10,
+        color: '#fff',
+        backgroundColor: '#444',
+    },
+    modalBtn: {
+        backgroundColor: '#555',
+        padding: 10,
+        borderRadius: 8,
+        paddingHorizontal: 20,
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    
 });
