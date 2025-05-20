@@ -6,18 +6,7 @@ import { useNavigationState } from '@react-navigation/native';
 
 const NavFooter = ({ navigation, route }) => {
     const cartItems = useSelector(state => state.cart.items);
-
-    const groupedItems = cartItems.reduce((acc, item) => {
-        if (acc.has(item.id)) {
-          acc.get(item.id).count += 1;
-        } else {
-          acc.set(item.id, { ...item, count: 1 });
-        }
-        return acc;
-    }, new Map());
-
-    const itemsArray = Array.from(groupedItems.values());
-    const totalItemCount = itemsArray.reduce((sum, item) => sum + item.count, 0);
+    const totalItemCount = cartItems.reduce((sum, item) => sum + item.count, 0);
 
     const currentRoute = route?.name || '';
 
@@ -87,8 +76,12 @@ const NavFooter = ({ navigation, route }) => {
                 onPress={() => navigateIfLoggedIn('profile')}
                 activeOpacity={0.7}
             >
-                <Ionicons name="person" size={24} color="white" />
-                <Text style={styles.navFooterText}>User Profile</Text>
+                <Ionicons 
+                    name="person" 
+                    size={24} 
+                    color={currentRoute === 'profile' ? '#007AFF' : 'white'}
+                />
+                <Text style={currentRoute === 'profile' ? styles.navFooterTextSelected : styles.navFooterText}>User Profile</Text>
             </TouchableOpacity>
         </View>
     );

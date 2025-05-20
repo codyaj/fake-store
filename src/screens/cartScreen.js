@@ -2,34 +2,57 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, ActivityIndicator, ScrollView, TouchableOpacity, StatusBar, Image } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
 import { useSelector, useDispatch } from 'react-redux';
-import { removeFromCart, addToCart } from '../slices/cartSlice';
+import { removeFromCartAndSync, addToCartAndSync } from '../slices/cartSlice';
 import NavFooter from '../components/navFooter';
 
 export default function CartScreen({ route, navigation }) {
     const cartItems = useSelector((state) => state.cart.items);
+    const token = useSelector((state) => state.auth.token);
     const dispatch = useDispatch();
 
-    const groupedItems = cartItems.reduce((acc, item) => {
-        if (acc.has(item.id)) {
-            acc.get(item.id).count += 1;
-        } else {
-            acc.set(item.id, { ...item, count: 1 });
-        }
-        return acc;
-    }, new Map());
+    const [detailedProducts, setDetailedProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    const itemsArray = Array.from(groupedItems.values());
+    const uniqueIds = [...new Set(cartItems.map(item => item.id))];
+
+    useEffect(() => {
+        const fetchProductDetails = async () => {
+            try {
+                const responses = await Promise.all(
+                    uniqueIds.map(id => fetch(`https://fakestoreapi.com/products/${id}`))
+                );
+
+                const products = await Promise.all(responses.map(res => res.json()));
+
+                const merged = products.map(product => {
+                    const cartItem = cartItems.find(item => item.id === product.id);
+                    return {
+                        ...product,
+                        count: cartItem?.count || 1
+                    };
+                });
+
+                setDetailedProducts(merged);
+                setLoading(false);
+            } catch (error) {
+                console.error('Failed to fetch product details:', error);
+                setLoading(false);
+            }
+        };
+
+        fetchProductDetails();
+    }, [cartItems]);
 
     const handleAddToCart = (product) => {
-        dispatch(addToCart(product));
+        dispatch(addToCartAndSync({ id: product.id, price: product.price }, token));
     };
 
     const handleRemoveFromCart = (product) => {
-        dispatch(removeFromCart(product));
+        dispatch(removeFromCartAndSync({ id: product.id }, token));
     };
 
-    const totalItemCount = itemsArray.reduce((sum, item) => sum + item.count, 0);
-    const totalCost = itemsArray.reduce((sum, item) => sum + item.price * item.count, 0);
+    const totalItemCount = detailedProducts.reduce((sum, item) => sum + item.count, 0);
+    const totalCost = detailedProducts.reduce((sum, item) => sum + item.price * item.count, 0);
 
     return (
         <View style={styles.container}>
@@ -39,42 +62,46 @@ export default function CartScreen({ route, navigation }) {
                 <Text style={styles.headerText}>Shopping Cart</Text>
             </View>
 
-            {itemsArray.length > 0 && (
-                <View style={styles.totalContainer}>
-                    <Text style={styles.totalText}>Items: {totalItemCount}</Text>
-                    <Text style={styles.totalText}>Price: ${totalCost.toFixed(2)}</Text>
-                </View>
-            )}
-
-            <ScrollView contentContainerStyle={itemsArray.length === 0 ? styles.emptyCartContainer : null}>
-                {itemsArray.length === 0 ? (
-                    <Text style={styles.emptyCartText}>Cart is Empty!</Text>
-                ) : (
-                    itemsArray.map((item) => (
-                        <View key={item.id} style={styles.itemContainer}>
-                            <Image 
-                                source={{ uri: item.image }}
-                                style={styles.itemImage}
-                            />
-
-                            <View style={styles.itemContentContainer}>
-                                <Text style={styles.itemText}>{item.title}</Text>
-                                <Text style={styles.itemText}>Price: ${item.price}</Text>
-
-                                <View style={styles.itemContentBottomContainer}>
-                                    <TouchableOpacity onPress={() => handleRemoveFromCart(item)}>
-                                        <Ionicons name="remove-circle" size={24} color="white" />
-                                    </TouchableOpacity>
-                                    <Text style={styles.quanText}>Quantity: {item.count}</Text>
-                                    <TouchableOpacity onPress={() => handleAddToCart(item)}>
-                                        <Ionicons name="add-circle" size={24} color="white" />
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
+            {loading ? (
+                <ActivityIndicator size="large" color="#fff" style={{ marginTop: 50 }} />
+            ) : (
+                <>
+                    {detailedProducts.length > 0 && (
+                        <View style={styles.totalContainer}>
+                            <Text style={styles.totalText}>Items: {totalItemCount}</Text>
+                            <Text style={styles.totalText}>Price: ${totalCost.toFixed(2)}</Text>
                         </View>
-                    ))
-                )}
-            </ScrollView>
+                    )}
+
+                    <ScrollView contentContainerStyle={detailedProducts.length === 0 ? styles.emptyCartContainer : null}>
+                        {detailedProducts.length === 0 ? (
+                            <Text style={styles.emptyCartText}>Cart is Empty!</Text>
+                        ) : (
+                            detailedProducts.map((item) => (
+                                <View key={item.id} style={styles.itemContainer}>
+                                    <Image
+                                        source={{ uri: item.image }}
+                                        style={styles.itemImage}
+                                    />
+                                    <View style={styles.itemContentContainer}>
+                                        <Text style={styles.itemText}>{item.title}</Text>
+                                        <Text style={styles.itemText}>Price: ${item.price}</Text>
+                                        <View style={styles.itemContentBottomContainer}>
+                                            <TouchableOpacity onPress={() => handleRemoveFromCart(item)}>
+                                                <Ionicons name="remove-circle" size={24} color="white" />
+                                            </TouchableOpacity>
+                                            <Text style={styles.quanText}>Quantity: {item.count}</Text>
+                                            <TouchableOpacity onPress={() => handleAddToCart(item)}>
+                                                <Ionicons name="add-circle" size={24} color="white" />
+                                            </TouchableOpacity>
+                                        </View>
+                                    </View>
+                                </View>
+                            ))
+                        )}
+                    </ScrollView>
+                </>
+            )}
 
             <NavFooter navigation={navigation} route={route} />
         </View>

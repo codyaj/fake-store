@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, TextInput, TouchableOpacity, StatusBar } from '
 import { Ionicons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../slices/authSlice';
+import { syncCart } from '../slices/cartSlice'
 import NavFooter from '../components/navFooter';
 
 export default function LoginScreen({ route, navigation }) {
@@ -40,6 +41,8 @@ export default function LoginScreen({ route, navigation }) {
                     token: data.token,
                     user: { name: data.name, email: data.email, id: data.id }
                 }));
+
+                dispatch(syncCart(data.token));
 
                 navigation.replace('profile');
             } else {

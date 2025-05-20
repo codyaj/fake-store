@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, TextInput, TouchableOpacity, StatusBar, Modal, 
 import { Ionicons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from 'react-redux';
 import { logout, login } from '../slices/authSlice';
+import { clearCart } from '../slices/cartSlice';
 import NavFooter from '../components/navFooter';
 
 export default function ProfileScreen({ route, navigation }) {
@@ -16,6 +17,7 @@ export default function ProfileScreen({ route, navigation }) {
 
     const signout = () => {
         dispatch(logout());
+        dispatch(clearCart());
         navigation.replace('login');
     };
 

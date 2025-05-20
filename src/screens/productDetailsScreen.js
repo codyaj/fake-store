@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, ActivityIndicator, ScrollView, TouchableOpacity, StatusBar, Image } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from 'react-redux';
-import { addToCart } from '../slices/cartSlice';
+import { addToCartAndSync } from '../slices/cartSlice';
 import NavFooter from '../components/navFooter';
 
 export default function ProductDetailsScreen({ route, navigation }) {
     const { product } = route.params;
+    const token = useSelector((state) => state.auth.token);
 
     function StarRating({ rating }) {
         const fullStars = Math.floor(rating);
@@ -31,7 +32,7 @@ export default function ProductDetailsScreen({ route, navigation }) {
     const dispatch = useDispatch();
 
     const handleAddToCart = (product) => {
-        dispatch(addToCart(product));
+        dispatch(addToCartAndSync({ id: product.id, price: product.price }, token));
         alert('Success, Item added to cart!');
     };
 
