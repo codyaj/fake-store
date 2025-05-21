@@ -64,11 +64,15 @@ const NavFooter = ({ navigation, route }) => {
 
             <TouchableOpacity 
                 style={styles.navFooterBtn}
-                onPress={() => alert('changeme')}
+                onPress={() => navigateIfLoggedIn('order')}
                 activeOpacity={0.7}
             >
-                <Ionicons name="gift" size={24} color="white" />
-                <Text style={styles.navFooterText}>My Orders</Text>
+                <Ionicons 
+                    name="gift" 
+                    size={24} 
+                    color={currentRoute === 'order' ? '#007AFF' : 'white'}
+                />
+                <Text style={currentRoute === 'order' ? styles.navFooterTextSelected : styles.navFooterText}>My Orders</Text>
             </TouchableOpacity>
 
             <TouchableOpacity 

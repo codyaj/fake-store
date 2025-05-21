@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, ActivityIndicator, ScrollView, TouchableOpacity, StatusBar, Image } from 'react-native';
+import { StyleSheet, View, Text, ActivityIndicator, ScrollView, TouchableOpacity, StatusBar, Image, Alert } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
 import { useSelector, useDispatch } from 'react-redux';
-import { removeFromCartAndSync, addToCartAndSync } from '../slices/cartSlice';
+import { removeFromCartAndSync, addToCartAndSync, clearCartAndSync } from '../slices/cartSlice';
 import NavFooter from '../components/navFooter';
 
 export default function CartScreen({ route, navigation }) {
@@ -51,6 +51,42 @@ export default function CartScreen({ route, navigation }) {
         dispatch(removeFromCartAndSync({ id: product.id }, token));
     };
 
+    const handleOrder = async () => {
+        const formattedItems = cartItems.map(item => ({
+            prodID: item.id,
+            price: item.price,
+            quantity: item.count,
+        }));
+
+        console.log('Formatted Items:', formattedItems);
+
+        try {
+            const response = await fetch('http://192.168.20.7:3000/orders/neworder', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify({ items: formattedItems }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.status === "OK") {
+                console.log('Order successful:', data);
+
+                Alert.alert('Success', 'Order has been processed');
+
+                dispatch(clearCartAndSync(token));
+            } else {
+                console.error('Order failed:', data.message || data);
+                Alert.alert('Failed', data.message || data);
+            }
+        } catch (error) {
+            console.log('Network error:', error);
+        }
+    };
+
     const totalItemCount = detailedProducts.reduce((sum, item) => sum + item.count, 0);
     const totalCost = detailedProducts.reduce((sum, item) => sum + item.price * item.count, 0);
 
@@ -63,13 +99,21 @@ export default function CartScreen({ route, navigation }) {
             </View>
 
             {loading ? (
-                <ActivityIndicator size="large" color="#fff" style={{ marginTop: 50 }} />
+                <ActivityIndicator size="large" color="#fff" style={styles.loadingScreen} />
             ) : (
                 <>
                     {detailedProducts.length > 0 && (
-                        <View style={styles.totalContainer}>
-                            <Text style={styles.totalText}>Items: {totalItemCount}</Text>
-                            <Text style={styles.totalText}>Price: ${totalCost.toFixed(2)}</Text>
+                        <View>
+                            <View style={styles.totalContainer}>
+                                <Text style={styles.totalText}>Items: {totalItemCount}</Text>
+                                <Text style={styles.totalText}>Price: ${totalCost.toFixed(2)}</Text>
+                            </View>
+                            <TouchableOpacity
+                                style={styles.btn}
+                                onPress={() => handleOrder()}
+                            >
+                                <Text style={styles.btnText}>Complete order</Text>
+                            </TouchableOpacity>
                         </View>
                     )}
 
@@ -137,7 +181,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#fff',
         padding: 20,
-        marginBottom: 30,
+        marginBottom: 10,
         marginRight: 30,
         marginLeft: 30,
         marginTop: 0,
@@ -189,6 +233,25 @@ const styles = StyleSheet.create({
         marginTop: 'auto',
     },
     quanText: {
+        color: '#fff',
+    },
+    loadingScreen: {
+        marginTop: 50,
+        flex: 1,
+    },
+    btn: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginHorizontal: 40,
+        backgroundColor: '#363636',
+        justifyContent: 'center',
+        borderRadius: 8,
+        paddingHorizontal: 26,
+        paddingVertical: 10,
+        marginBottom: 20,
+    },
+    btnText: {
+        marginLeft: 5,
         color: '#fff',
     },
 });

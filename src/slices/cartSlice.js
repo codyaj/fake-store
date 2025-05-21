@@ -66,6 +66,32 @@ export const syncCart = (token) => async (dispatch, getState) => {
     }
 };
 
+export const clearCartAndSync = (token) => async (dispatch, getState) => {
+    dispatch(clearCart());
+
+    try {
+        const updatedCart = getState().cart.items;
+
+        const response = await fetch('http://192.168.20.7:3000/cart', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify({ items: updatedCart }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error('Server responded with:', errorData);
+        } else {
+            console.log('Cart synced successfully');
+        }
+    } catch (err) {
+        console.error('Failed to sync cart:', err);
+    }
+}
+
 export const addToCartAndSync = (product, token) => async (dispatch, getState) => {
     dispatch(addToCart(product));
 

@@ -14,6 +14,7 @@ import cartScreen from './src/screens/cartScreen';
 import loginScreen from './src/screens/loginScreen';
 import signupScreen from './src/screens/signupScreen';
 import profileScreen from './src/screens/profileScreen';
+import orderScreen from './src/screens/orderScreen';
 
 const Stack = createStackNavigator();
 
@@ -63,6 +64,10 @@ export default function App() {
           <Stack.Screen 
             name='profile'
             component={profileScreen}
+          />
+          <Stack.Screen
+            name='order'
+            component={orderScreen}
           />
         </Stack.Navigator>
       </NavigationContainer>
