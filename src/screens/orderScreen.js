@@ -183,8 +183,8 @@ export default function OrderScreen({ route, navigation }) {
                                 const orderItems = JSON.parse(item.order_items);
                             
                                 return (
-                                    <View>
-                                        <View key={item.id} style={styles.listContainer}>
+                                    <View key={item.id}>
+                                        <View style={styles.listContainer}>
                                             <Text style={styles.listText}>Order ID: {item.id}</Text>
                                             <Text style={styles.listText}>Items: {item.item_numbers}</Text>
                                             <Text style={styles.listText}>${item.total_price / 100}</Text>
@@ -242,8 +242,8 @@ export default function OrderScreen({ route, navigation }) {
                                 const orderItems = JSON.parse(item.order_items);
                             
                                 return (
-                                    <View>
-                                        <View key={item.id} style={styles.listContainer}>
+                                    <View key={item.id}>
+                                        <View style={styles.listContainer}>
                                             <Text style={styles.listText}>Order ID: {item.id}</Text>
                                             <Text style={styles.listText}>Items: {item.item_numbers}</Text>
                                             <Text style={styles.listText}>${item.total_price / 100}</Text>
@@ -300,8 +300,8 @@ export default function OrderScreen({ route, navigation }) {
                                 const orderItems = JSON.parse(item.order_items);
                             
                                 return (
-                                    <View>
-                                        <View key={item.id} style={styles.listContainer}>
+                                    <View key={item.id}>
+                                        <View style={styles.listContainer}>
                                             <Text style={styles.listText}>Order ID: {item.id}</Text>
                                             <Text style={styles.listText}>Items: {item.item_numbers}</Text>
                                             <Text style={styles.listText}>${item.total_price / 100}</Text>
@@ -399,6 +399,8 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         color: '#fff',
         fontSize: 18,
+        marginLeft: 150,
+        marginBottom: 20,
     },
     itemContentContainer: {
         flexDirection: 'row',

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, StatusBar } from 'react-native';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, StatusBar, Alert } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../slices/authSlice';
@@ -11,6 +11,7 @@ export default function SignupScreen({ route, navigation }) {
     const [password, setPassword] = useState('');
 
     const clearAll = () => {
+        setUsername('');
         setEmail('');
         setPassword('');
     }
@@ -46,9 +47,11 @@ export default function SignupScreen({ route, navigation }) {
                 navigation.replace('profile');
             } else {
                 console.error('Signup failed:', data.message || data);
+                Alert.alert('Error', data.message || data);
             }
         } catch (error) {
             console.log('Network error:', error);
+            Alert.alert('Network Error', error);
         }
     }
 
