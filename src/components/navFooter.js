@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useSelector } from 'react-redux';
-import { useNavigationState } from '@react-navigation/native';
 
 const NavFooter = ({ navigation, route }) => {
     const cartItems = useSelector(state => state.cart.items);
+    const token = useSelector((state) => state.auth.token);
+    const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+
     const totalItemCount = cartItems.reduce((sum, item) => sum + item.count, 0);
 
     const currentRoute = route?.name || '';
@@ -22,6 +24,44 @@ const NavFooter = ({ navigation, route }) => {
             }
         }
     }
+
+    const [unpaidUndelivered, setUnpaidUndelivered] = useState([]);
+
+    useEffect(() => {
+        const fetchOrders = async () => {
+            try {
+                const response = await fetch('http://192.168.20.7:3000/orders/all', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+    
+                const data = await response.json();
+    
+                if (response.ok) {
+                    const allOrders = data.orders;
+                    
+                    const unpaid = allOrders.filter(order => order.is_paid === 0 && order.is_delivered === 0);
+                    
+                    setUnpaidUndelivered(unpaid);
+                } else {
+                    console.error('Order failed:', data.message || data);
+                    Alert.alert('Failed', data.message || data);
+                }
+            } catch (err) {
+                console.error('Order failed:', data.message || data);
+                Alert.alert('Failed', data.message || data);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (isLoggedIn) {
+            fetchOrders();
+        }
+    }, []);
 
     return (
         <View style={styles.navFooterContainer}>
@@ -67,11 +107,18 @@ const NavFooter = ({ navigation, route }) => {
                 onPress={() => navigateIfLoggedIn('order')}
                 activeOpacity={0.7}
             >
-                <Ionicons 
-                    name="gift" 
-                    size={24} 
-                    color={currentRoute === 'order' ? '#007AFF' : 'white'}
-                />
+                <View style={{ position: 'relative' }}>
+                    <Ionicons 
+                        name="gift" 
+                        size={24} 
+                        color={currentRoute === 'order' ? '#007AFF' : 'white'}
+                    />
+                    {unpaidUndelivered.length > 0 && (
+                        <View style={styles.cartBadge}>
+                            <Text style={styles.cartBadgeText}>{unpaidUndelivered.length}</Text>
+                        </View>
+                    )}
+                </View>
                 <Text style={currentRoute === 'order' ? styles.navFooterTextSelected : styles.navFooterText}>My Orders</Text>
             </TouchableOpacity>
 
